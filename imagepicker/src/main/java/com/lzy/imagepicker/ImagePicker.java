@@ -6,7 +6,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
 
 import com.isseiaoki.simplecropview.FreeCropImageView;
@@ -253,8 +255,14 @@ public class ImagePicker {
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         if (intent.resolveActivity(activity.getPackageManager()) != null) {
             ContentValues contentValues = new ContentValues();
-            contentValues.put(MediaStore.Images.Media.DISPLAY_NAME, getFileName("IMG_", ".jpg"));
-            contentValues.put(MediaStore.Images.Media.MIME_TYPE, "image/JPEG");
+            String fileName = getFileName("IMG_", ".jpg");
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
+                contentValues.put(MediaStore.Images.Media.DATA, Environment.getExternalStoragePublicDirectory("/DCIM/Camera") + "/" + fileName);
+                contentValues.put(MediaStore.MediaColumns.DATE_MODIFIED, System.currentTimeMillis() / 1000);
+            } else {
+                contentValues.put(MediaStore.Images.Media.DISPLAY_NAME, fileName);
+            }
+            contentValues.put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg");
             mUri = activity.getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues);
             intent.putExtra(MediaStore.EXTRA_OUTPUT, mUri);
             activity.startActivityForResult(intent, requestCode);
