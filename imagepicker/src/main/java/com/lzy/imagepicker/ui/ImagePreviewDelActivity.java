@@ -66,9 +66,9 @@ public class ImagePreviewDelActivity extends ImagePreviewBaseActivity implements
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 mImageItems.remove(mCurrentPosition);
+                mAdapter.setData(mImageItems);
+                mAdapter.notifyDataSetChanged();
                 if (mImageItems.size() > 0) {
-                    mAdapter.setData(mImageItems);
-                    mAdapter.notifyDataSetChanged();
                     mTitleCount.setText(getString(R.string.ip_preview_image_count, mCurrentPosition + 1, mImageItems.size()));
                 } else {
                     onBackPressed();
