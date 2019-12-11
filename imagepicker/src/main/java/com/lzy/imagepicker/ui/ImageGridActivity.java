@@ -2,10 +2,14 @@ package com.lzy.imagepicker.ui;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.content.ContentUris;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -315,29 +319,50 @@ public class ImageGridActivity extends ImageBaseActivity implements ImageDataSou
                 finish();
             }
         } else {
-            if (resultCode == RESULT_OK && requestCode == ImagePicker.REQUEST_CODE_TAKE) {
-                ImageItem imageItem = new ImageItem();
-                imageItem.uri = imagePicker.getUri();
-                if (!imagePicker.isMultiMode()) {
-                    if (imagePicker.isFreeCrop) {
-                        imagePicker.clearSelectedImages();
-                        imagePicker.addSelectedImageItem(0, imageItem, true);
-                        Intent intent = new Intent(ImageGridActivity.this, FreeCropActivity.class);
-                        startActivityForResult(intent, ImagePicker.REQUEST_CODE_CROP);
-                        return;
-                    } else if (imagePicker.isCrop()) {
-                        imagePicker.clearSelectedImages();
-                        imagePicker.addSelectedImageItem(0, imageItem, true);
-                        Intent intent = new Intent(ImageGridActivity.this, ImageCropActivity.class);
-                        startActivityForResult(intent, ImagePicker.REQUEST_CODE_CROP);
-                        return;
+            if (requestCode == ImagePicker.REQUEST_CODE_TAKE) {
+                if (resultCode == RESULT_OK) {
+                    ImageItem imageItem = new ImageItem();
+                    imageItem.uri = imagePicker.getUri();
+                    if (!imagePicker.isMultiMode()) {
+                        if (imagePicker.isFreeCrop) {
+                            imagePicker.clearSelectedImages();
+                            imagePicker.addSelectedImageItem(0, imageItem, true);
+                            Intent intent = new Intent(ImageGridActivity.this, FreeCropActivity.class);
+                            startActivityForResult(intent, ImagePicker.REQUEST_CODE_CROP);
+                            return;
+                        } else if (imagePicker.isCrop()) {
+                            imagePicker.clearSelectedImages();
+                            imagePicker.addSelectedImageItem(0, imageItem, true);
+                            Intent intent = new Intent(ImageGridActivity.this, ImageCropActivity.class);
+                            startActivityForResult(intent, ImagePicker.REQUEST_CODE_CROP);
+                            return;
+                        }
+                    }
+                    imagePicker.addSelectedImageItem(0, imageItem, true);
+                    Intent intent = new Intent();
+                    intent.putExtra(ImagePicker.EXTRA_RESULT_ITEMS, imagePicker.getSelectedImages());
+                    setResult(ImagePicker.RESULT_CODE_ITEMS, intent);
+                    finish();
+                } else {
+                    Uri emptyUri = imagePicker.getUri();
+                    Cursor cursor = null;
+                    try {
+                        cursor = getContentResolver().query(emptyUri, new String[]{MediaStore.Images.ImageColumns._ID}, null, null, null);
+                        if (cursor != null && cursor.getCount() == 1 && cursor.moveToFirst() && ContentUris.parseId(emptyUri) == cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Images.ImageColumns._ID))) {
+                            getContentResolver().delete(emptyUri, null, null);
+                        }
+                    } catch (Exception e) {
+                        // ignore
+                        e.printStackTrace();
+                    } finally {
+                        if (cursor != null) {
+                            cursor.close();
+                        }
+                    }
+                    if (directPhoto) {
+                        finish();
                     }
                 }
-                imagePicker.addSelectedImageItem(0, imageItem, true);
-                Intent intent = new Intent();
-                intent.putExtra(ImagePicker.EXTRA_RESULT_ITEMS, imagePicker.getSelectedImages());
-                setResult(ImagePicker.RESULT_CODE_ITEMS, intent);
-                finish();
             } else if (directPhoto) {
                 finish();
             }
