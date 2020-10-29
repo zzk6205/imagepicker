@@ -21,10 +21,7 @@ import com.lzy.imagepicker.view.SuperCheckBox;
 
 import java.util.ArrayList;
 
-
-
 public class ImageRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
-
 
     private static final int ITEM_TYPE_CAMERA = 0;
     private static final int ITEM_TYPE_NORMAL = 1;
@@ -51,7 +48,6 @@ public class ImageRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.View
         notifyDataSetChanged();
     }
 
-
     public ImageRecyclerAdapter(Activity activity, ArrayList<ImageItem> images) {
         this.mActivity = activity;
         if (images == null || images.size() == 0) this.images = new ArrayList<>();
@@ -66,18 +62,18 @@ public class ImageRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.View
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        if (viewType == ITEM_TYPE_CAMERA){
-            return new CameraViewHolder(mInflater.inflate(R.layout.adapter_camera_item,parent,false));
+        if (viewType == ITEM_TYPE_CAMERA) {
+            return new CameraViewHolder(mInflater.inflate(R.layout.adapter_camera_item, parent, false));
         }
-        return new ImageViewHolder(mInflater.inflate(R.layout.adapter_image_list_item,parent,false));
+        return new ImageViewHolder(mInflater.inflate(R.layout.adapter_image_list_item, parent, false));
     }
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        if (holder instanceof CameraViewHolder){
-            ((CameraViewHolder)holder).bindCamera();
-        }else if (holder instanceof ImageViewHolder){
-            ((ImageViewHolder)holder).bind(position);
+        if (holder instanceof CameraViewHolder) {
+            ((CameraViewHolder) holder).bindCamera();
+        } else if (holder instanceof ImageViewHolder) {
+            ((ImageViewHolder) holder).bind(position);
         }
     }
 
@@ -114,18 +110,17 @@ public class ImageRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.View
         View checkView;
         SuperCheckBox cbCheck;
 
-
         ImageViewHolder(View itemView) {
             super(itemView);
             rootView = itemView;
             ivThumb = (ImageView) itemView.findViewById(R.id.iv_thumb);
             mask = itemView.findViewById(R.id.mask);
-            checkView=itemView.findViewById(R.id.checkView);
+            checkView = itemView.findViewById(R.id.checkView);
             cbCheck = (SuperCheckBox) itemView.findViewById(R.id.cb_check);
             itemView.setLayoutParams(new AbsListView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, mImageSize));
         }
 
-        void bind(final int position){
+        void bind(final int position) {
             final ImageItem imageItem = getItem(position);
             ivThumb.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -138,7 +133,7 @@ public class ImageRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.View
                 public void onClick(View v) {
                     cbCheck.setChecked(!cbCheck.isChecked());
                     int selectLimit = imagePicker.getSelectLimit();
-                    if (cbCheck.isChecked() && mSelectedImages.size() >= selectLimit) {
+                    if (cbCheck.isChecked() && selectLimit >= 0 && mSelectedImages.size() >= selectLimit) {
                         InnerToaster.obj(mActivity).show(mActivity.getString(R.string.ip_select_limit, selectLimit));
                         cbCheck.setChecked(false);
                         mask.setVisibility(View.GONE);
@@ -175,12 +170,17 @@ public class ImageRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.View
             mItemView = itemView;
         }
 
-        void bindCamera(){
+        void bindCamera() {
             mItemView.setLayoutParams(new AbsListView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, mImageSize));
             mItemView.setTag(null);
             mItemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    int selectLimit = imagePicker.getSelectLimit();
+                    if (selectLimit >= 0 && mSelectedImages.size() >= selectLimit) {
+                        InnerToaster.obj(mActivity).show(mActivity.getString(R.string.ip_select_limit, selectLimit));
+                        return;
+                    }
                     if (!((ImageBaseActivity) mActivity).checkPermission(Manifest.permission.CAMERA)) {
                         ActivityCompat.requestPermissions(mActivity, new String[]{Manifest.permission.CAMERA}, ImageGridActivity.REQUEST_PERMISSION_CAMERA);
                     } else {

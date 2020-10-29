@@ -2,20 +2,25 @@
 
 buildscript {
     repositories {
+        maven {
+            url 'http://maven.aliyun.com/nexus/content/groups/public/'
+            name 'aliyun'
+        }
         jcenter()
         google()
         mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.3.3'
-
-        //jcenter
-//        classpath 'com.novoda:bintray-release:0.9.1'
+        classpath 'com.android.tools.build:gradle:3.5.0'
     }
 }
 
 allprojects {
     repositories {
+        maven {
+            url 'http://maven.aliyun.com/nexus/content/groups/public/'
+            name 'aliyun'
+        }
         jcenter()
         google()
         mavenCentral()

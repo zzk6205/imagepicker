@@ -67,7 +67,7 @@ public class ImagePreviewActivity extends ImagePreviewBaseActivity implements Im
             public void onClick(View v) {
                 ImageItem imageItem = mImageItems.get(mCurrentPosition);
                 int selectLimit = imagePicker.getSelectLimit();
-                if (mCbCheck.isChecked() && selectedImages.size() >= selectLimit) {
+                if (mCbCheck.isChecked() && selectLimit >= 0 && selectedImages.size() >= selectLimit) {
                     InnerToaster.obj(ImagePreviewActivity.this).show(getString(R.string.ip_select_limit, selectLimit));
                     mCbCheck.setChecked(false);
                 } else {
@@ -110,7 +110,11 @@ public class ImagePreviewActivity extends ImagePreviewBaseActivity implements Im
     @Override
     public void onImageSelected(int position, ImageItem item, boolean isAdd) {
         if (imagePicker.getSelectImageCount() > 0) {
-            mBtnOk.setText(getString(R.string.ip_select_complete, imagePicker.getSelectImageCount(), imagePicker.getSelectLimit()));
+            if (imagePicker.getSelectLimit() >= 0) {
+                mBtnOk.setText(getString(R.string.ip_select_complete, imagePicker.getSelectImageCount(), imagePicker.getSelectLimit()));
+            } else {
+                mBtnOk.setText(getString(R.string.ip_complete));
+            }
         } else {
             mBtnOk.setText(getString(R.string.ip_complete));
         }

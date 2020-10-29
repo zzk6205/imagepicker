@@ -168,7 +168,8 @@ public class ImagePickerActivity extends AppCompatActivity implements SeekBar.On
                 }
                 Intent intent = new Intent(this, ImageGridActivity.class);
                 intent.putExtra(ImageGridActivity.EXTRAS_IMAGES, images);
-                //ImagePicker.getInstance().setSelectedImages(images);
+                // ImagePicker.getInstance().setSelectedImages(images);
+                // intent.putExtra(ImageGridActivity.EXTRAS_TAKE_PICKERS, true); // 是否是直接打开相机
                 startActivityForResult(intent, 100);
                 break;
             case R.id.btn_wxDemo:

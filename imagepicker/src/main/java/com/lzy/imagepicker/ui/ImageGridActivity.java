@@ -284,7 +284,11 @@ public class ImageGridActivity extends ImageBaseActivity implements ImageDataSou
     @Override
     public void onImageSelected(int position, ImageItem item, boolean isAdd) {
         if (imagePicker.getSelectImageCount() > 0) {
-            mBtnOk.setText(getString(R.string.ip_select_complete, imagePicker.getSelectImageCount(), imagePicker.getSelectLimit()));
+            if (imagePicker.getSelectLimit() >= 0) {
+                mBtnOk.setText(getString(R.string.ip_select_complete, imagePicker.getSelectImageCount(), imagePicker.getSelectLimit()));
+            } else {
+                mBtnOk.setText(getString(R.string.ip_complete));
+            }
             mBtnOk.setEnabled(true);
             mBtnPre.setEnabled(true);
             mBtnPre.setText(getResources().getString(R.string.ip_preview_count, imagePicker.getSelectImageCount()));
