@@ -23,8 +23,8 @@ import java.util.ArrayList;
 
 public class ImageRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    private static final int ITEM_TYPE_CAMERA = 0;
-    private static final int ITEM_TYPE_NORMAL = 1;
+    private final int ITEM_TYPE_CAMERA = 0;
+    private final int ITEM_TYPE_NORMAL = 1;
     private ImagePicker imagePicker;
     private Activity mActivity;
     private ArrayList<ImageItem> images;
@@ -43,16 +43,21 @@ public class ImageRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.View
     }
 
     public void refreshData(ArrayList<ImageItem> images) {
-        if (images == null || images.size() == 0) this.images = new ArrayList<>();
-        else this.images = images;
+        if (images == null || images.size() == 0) {
+            this.images = new ArrayList<>();
+        } else {
+            this.images = images;
+        }
         notifyDataSetChanged();
     }
 
     public ImageRecyclerAdapter(Activity activity, ArrayList<ImageItem> images) {
         this.mActivity = activity;
-        if (images == null || images.size() == 0) this.images = new ArrayList<>();
-        else this.images = images;
-
+        if (images == null || images.size() == 0) {
+            this.images = new ArrayList<>();
+        } else {
+            this.images = images;
+        }
         mImageSize = Utils.getImageItemWidth(mActivity);
         imagePicker = ImagePicker.getInstance();
         isShowCamera = imagePicker.isShowCamera();
@@ -79,7 +84,9 @@ public class ImageRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.View
 
     @Override
     public int getItemViewType(int position) {
-        if (isShowCamera) return position == 0 ? ITEM_TYPE_CAMERA : ITEM_TYPE_NORMAL;
+        if (isShowCamera) {
+            return position == 0 ? ITEM_TYPE_CAMERA : ITEM_TYPE_NORMAL;
+        }
         return ITEM_TYPE_NORMAL;
     }
 
@@ -95,11 +102,17 @@ public class ImageRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.View
 
     public ImageItem getItem(int position) {
         if (isShowCamera) {
-            if (position == 0) return null;
+            if (position == 0) {
+                return null;
+            }
             return images.get(position - 1);
         } else {
             return images.get(position);
         }
+    }
+
+    public boolean isShowCamera() {
+        return isShowCamera;
     }
 
     private class ImageViewHolder extends RecyclerView.ViewHolder {
@@ -113,10 +126,10 @@ public class ImageRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.View
         ImageViewHolder(View itemView) {
             super(itemView);
             rootView = itemView;
-            ivThumb = (ImageView) itemView.findViewById(R.id.iv_thumb);
+            ivThumb = itemView.findViewById(R.id.iv_thumb);
             mask = itemView.findViewById(R.id.mask);
             checkView = itemView.findViewById(R.id.checkView);
-            cbCheck = (SuperCheckBox) itemView.findViewById(R.id.cb_check);
+            cbCheck = itemView.findViewById(R.id.cb_check);
             itemView.setLayoutParams(new AbsListView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, mImageSize));
         }
 
@@ -125,7 +138,9 @@ public class ImageRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.View
             ivThumb.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (listener != null) listener.onImageItemClick(rootView, imageItem, position);
+                    if (listener != null) {
+                        listener.onImageItemClick(rootView, imageItem, position);
+                    }
                 }
             });
             checkView.setOnClickListener(new View.OnClickListener() {
@@ -190,4 +205,5 @@ public class ImageRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.View
             });
         }
     }
+
 }
