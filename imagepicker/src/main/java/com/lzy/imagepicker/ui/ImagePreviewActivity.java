@@ -171,18 +171,21 @@ public class ImagePreviewActivity extends ImagePreviewBaseActivity implements Im
 
     @Override
     public void onImageSingleTap() {
-        if (topBar.getVisibility() == View.VISIBLE) {
-            topBar.setAnimation(AnimationUtils.loadAnimation(this, R.anim.top_out));
-            bottomBar.setAnimation(AnimationUtils.loadAnimation(this, R.anim.fade_out));
-            topBar.setVisibility(View.GONE);
-            bottomBar.setVisibility(View.GONE);
-            tintManager.setStatusBarTintResource(Color.TRANSPARENT);
-        } else {
-            topBar.setAnimation(AnimationUtils.loadAnimation(this, R.anim.top_in));
-            bottomBar.setAnimation(AnimationUtils.loadAnimation(this, R.anim.fade_in));
-            topBar.setVisibility(View.VISIBLE);
-            bottomBar.setVisibility(View.VISIBLE);
-            tintManager.setStatusBarTintResource(R.color.ip_color_primary_dark);
-        }
+        // if (topBar.getVisibility() == View.VISIBLE) {
+        //     topBar.setAnimation(AnimationUtils.loadAnimation(this, R.anim.top_out));
+        //     bottomBar.setAnimation(AnimationUtils.loadAnimation(this, R.anim.fade_out));
+        //     topBar.setVisibility(View.GONE);
+        //     bottomBar.setVisibility(View.GONE);
+        //     tintManager.setStatusBarTintResource(Color.TRANSPARENT);
+        // } else {
+        //     topBar.setAnimation(AnimationUtils.loadAnimation(this, R.anim.top_in));
+        //     bottomBar.setAnimation(AnimationUtils.loadAnimation(this, R.anim.fade_in));
+        //     topBar.setVisibility(View.VISIBLE);
+        //     bottomBar.setVisibility(View.VISIBLE);
+        //     tintManager.setStatusBarTintResource(R.color.ip_color_primary_dark);
+        // }
+        Intent intent = new Intent();
+        setResult(ImagePicker.RESULT_CODE_BACK, intent);
+        finish();
     }
 }
